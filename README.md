@@ -37,7 +37,7 @@ A command-line interface application that uses OpenAI's tool calling capabilitie
 Start the CLI application:
 
 ```
-npm start
+node index.js
 ```
 
 Example queries:
