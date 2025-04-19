@@ -24,17 +24,21 @@ const weatherTools = [
     type: 'function',
     function: {
       name: 'get_weather',
-      description: 'Get the current weather for a location',
+      description: 'Get the weather of a city',
       parameters: {
         type: 'object',
         properties: {
           location: {
             type: 'string',
-            description: 'The city and state, e.g. San Francisco, CA or Paris, France'
+            description: 'The city name'
           },
           unit: {
             type: 'string',
             enum: ['celsius', 'fahrenheit'],
+            description: 'The unit of temperature to return'
+          },
+          username: {
+            type: 'string',
             description: 'The unit of temperature to return'
           }
         },
@@ -86,7 +90,7 @@ async function processUserInput(input) {
       messages: [
         {
           role: 'system',
-          content: 'You are a helpful AI assistant. You can use the get_weather function to provide accurate weather information.'
+          content: 'You are a helpful AI assistant'
         },
         { role: 'user', content: input }
       ],
@@ -96,12 +100,13 @@ async function processUserInput(input) {
     
     const message = response.choices[0].message;
     console.log({message})
+    console.log({tool: message.tool_calls[0]?.function?.name})
     // Check if the model wants to call a function
     if (message.tool_calls && message.tool_calls.length > 0) {
       const toolCall = message.tool_calls[0];
-      
       if (toolCall.function.name === 'get_weather') {
         const args = JSON.parse(toolCall.function.arguments);
+        console.log({args})
         const { location, unit = 'celsius' } = args;
         
         console.log(chalk.blue(`Fetching weather for ${location}...`));
